@@ -1,0 +1,4 @@
+CODEOWNERS @hmcts/platform-operations
+
+* @hmcts/platform-operations
+* @hmcts/cpp-development
