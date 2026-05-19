@@ -55,7 +55,7 @@ variable "cross_region_restore_enabled" {
 variable "immutability" {
   type        = string
   description = "The state of immutability for this Recovery Services Vault. Possible values are Disabled, Locked, and Unlocked. Defaults to Unlocked for immutable backups that can be configured but not tampered with. WARNING: Locked cannot be changed once set."
-  default     = "Locked"
+  default     = "Disabled"
 
   validation {
     condition     = contains(["Disabled", "Locked", "Unlocked"], var.immutability)
