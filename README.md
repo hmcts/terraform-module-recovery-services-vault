@@ -102,3 +102,4 @@ Extended retention (monthly and yearly) can be disabled via `crit4_5_enable_exte
 |------|-------------|
 | `recovery_vault_name` | The name of the Recovery Services Vault. Pass to `rsv_name` in the VM module. |
 | `recovery_vault_resource_group_name` | The resource group of the Recovery Services Vault. Pass to `rsv_resource_group_name` in the VM module. |
+| `crit4_5_backup_policy_id` | The ID of the `vm-crit4-5` backup policy. Use as `backup_policy_id` in `azurerm_backup_protected_vm` when enrolling VMs directly (i.e. when not using a VM module with built-in backup support). `null` when `enable_vm_crit4_5_policy = false`. |
