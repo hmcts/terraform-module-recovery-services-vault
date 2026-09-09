@@ -31,7 +31,7 @@ module "recovery_services_vault" {
   # sku                          = "Standard"      # Default
   # storage_mode_type            = "GeoRedundant"  # Default - enables cross-region restore
   # cross_region_restore_enabled = true            # Default - for UK South -> UK West DR scenario
-  # immutability                 = "Unlocked"      # Default - immutable but can be configured
+  # immutability                 = "Locked"        # Default - cannot be changed once set
 
   # Enable both policies - crit4_5 for production, test for validation
   enable_vm_crit4_5_policy = true
