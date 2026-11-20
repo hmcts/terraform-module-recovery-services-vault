@@ -42,7 +42,7 @@ resource "azurerm_backup_policy_vm" "crit4_5" {
   # V2 Enhanced required for sub-24hr RPO per CNP Baseline Policy
   policy_type      = "V2"
   timezone         = var.crit4_5_timezone
-  consistency_type = "OnlyCrashConsistent"
+  consistency_type = var.crit4_5_crash_consistent ? "OnlyCrashConsistent" : null
 
   # Every 4 hours - minimum achievable RPO with RSV (achievable RPO: 4h vs 15min BCDR target - accepted gap)
   backup {
