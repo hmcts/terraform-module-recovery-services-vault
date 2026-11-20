@@ -115,3 +115,103 @@ resource "azurerm_backup_policy_vm" "test" {
     count = var.test_daily_retention_count
   }
 }
+
+# ---------------------------------------------------------------------------------------------------------------------
+# BACKUP POLICY - CRIT4_5 (Criticality 4 and 5 Services) - AZURE FILE SHARE
+# Daily backup policy for Azure File Shares, reusing the crit4_5 timezone, backup time and retention settings
+# ---------------------------------------------------------------------------------------------------------------------
+
+resource "azurerm_backup_policy_file_share" "crit4_5" {
+  count = var.enable_file_share_crit4_5_policy ? 1 : 0
+
+  name                = "fileshare-crit4-5"
+  resource_group_name = var.resource_group_name
+  recovery_vault_name = azurerm_recovery_services_vault.main.name
+
+  timezone = var.crit4_5_timezone
+
+  # Daily backup at the start of the crit4_5 backup window
+  backup {
+    frequency = "Daily"
+    time      = var.crit4_5_backup_window_start
+  }
+
+  # Daily retention - 56 days (8 weeks), matching vm-crit4-5
+  retention_daily {
+    count = var.crit4_5_daily_retention_count
+  }
+
+  # Weekly retention - 8 weeks, matching vm-crit4-5
+  retention_weekly {
+    count    = var.crit4_5_weekly_retention_count
+    weekdays = var.crit4_5_weekly_retention_weekdays
+  }
+
+  # Monthly retention - 2 months, matching vm-crit4-5
+  dynamic "retention_monthly" {
+    for_each = var.crit4_5_enable_extended_retention ? [1] : []
+    content {
+      count    = var.crit4_5_monthly_retention_count
+      weekdays = var.crit4_5_monthly_retention_weekdays
+      weeks    = var.crit4_5_monthly_retention_weeks
+    }
+  }
+
+  # Yearly retention - 1 year, matching vm-crit4-5
+  dynamic "retention_yearly" {
+    for_each = var.crit4_5_enable_extended_retention ? [1] : []
+    content {
+      count    = var.crit4_5_yearly_retention_count
+      weekdays = var.crit4_5_yearly_retention_weekdays
+      weeks    = var.crit4_5_yearly_retention_weeks
+      months   = var.crit4_5_yearly_retention_months
+    }
+  }
+
+  lifecycle {
+    # Azure File Share policies have lower retention limits than VM policies
+    precondition {
+      condition = (
+        var.crit4_5_daily_retention_count <= 200 &&
+        var.crit4_5_weekly_retention_count <= 200 &&
+        var.crit4_5_monthly_retention_count <= 120 &&
+        var.crit4_5_yearly_retention_count <= 10
+      )
+      error_message = "The fileshare-crit4-5 policy supports at most 200 daily, 200 weekly, 120 monthly and 10 yearly retention points. Reduce the crit4_5 retention counts or disable enable_file_share_crit4_5_policy."
+    }
+  }
+}
+
+# ---------------------------------------------------------------------------------------------------------------------
+# BACKUP POLICY - TEST - AZURE FILE SHARE
+# Minimal retention policy for testing file share backup/restore, reusing the test policy variables
+# ---------------------------------------------------------------------------------------------------------------------
+
+resource "azurerm_backup_policy_file_share" "test" {
+  count = var.enable_file_share_test_policy ? 1 : 0
+
+  name                = "fileshare-test"
+  resource_group_name = var.resource_group_name
+  recovery_vault_name = azurerm_recovery_services_vault.main.name
+
+  timezone = var.test_timezone
+
+  # Daily backup schedule
+  backup {
+    frequency = "Daily"
+    time      = var.test_backup_time
+  }
+
+  # Minimal retention - 1 week for testing purposes
+  retention_daily {
+    count = var.test_daily_retention_count
+  }
+
+  lifecycle {
+    # Azure File Share policies support at most 200 daily retention points
+    precondition {
+      condition     = var.test_daily_retention_count <= 200
+      error_message = "The fileshare-test policy supports at most 200 daily retention points. Reduce test_daily_retention_count or disable enable_file_share_test_policy."
+    }
+  }
+}

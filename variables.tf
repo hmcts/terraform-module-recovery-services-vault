@@ -80,6 +80,18 @@ variable "enable_vm_test_policy" {
   default     = false
 }
 
+variable "enable_file_share_crit4_5_policy" {
+  type        = bool
+  description = "Whether to create the crit4_5 backup policy for Azure File Shares. This policy takes a daily backup at crit4_5_backup_window_start and reuses the crit4_5 timezone and retention variables. Disabled by default."
+  default     = false
+}
+
+variable "enable_file_share_test_policy" {
+  type        = bool
+  description = "Whether to create a test backup policy for Azure File Shares. This policy reuses the test_* timezone, backup time and retention variables and has minimal retention for testing purposes only."
+  default     = false
+}
+
 variable "vm_policy_type" {
   type        = string
   description = "The type of the VM backup policy for the test policy. Possible values are V1 (Standard) and V2 (Enhanced). Defaults to V1. Note: the crit4_5 policy always uses V2 Enhanced as required by the CNP Baseline Policy."
