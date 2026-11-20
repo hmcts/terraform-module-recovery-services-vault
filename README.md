@@ -70,6 +70,8 @@ Default `vm-crit4-5` retention per CNP Baseline Policy:
 
 Extended retention (monthly and yearly) can be disabled via `crit4_5_enable_extended_retention = false`.
 
+`vm-crit4-5` takes crash-consistent snapshots, which Azure only supports on VM sizes that can use premium storage (for example `DS3_v2`, not `D3_v2`). For other sizes, set `crit4_5_crash_consistent = false` to use Azure's default consistency.
+
 ## Inputs
 
 | Name | Description | Type | Default | Required |
@@ -90,6 +92,7 @@ Extended retention (monthly and yearly) can be disabled via `crit4_5_enable_exte
 | `crit4_5_backup_window_start` | Start time of the hourly backup window (HH:MM) | `string` | `"02:00"` | no |
 | `crit4_5_hour_interval` | Hours between crit4_5 backups | `number` | `4` | no |
 | `crit4_5_hour_duration` | Backup window duration in hours | `number` | `24` | no |
+| `crit4_5_crash_consistent` | Crash-consistent snapshots; needs a premium-storage-capable VM size | `bool` | `true` | no |
 | `crit4_5_instant_restore_retention_days` | Days to retain instant restore snapshots | `number` | `7` | no |
 | `crit4_5_daily_retention_count` | Days to retain daily backups | `number` | `56` | no |
 | `crit4_5_weekly_retention_count` | Weeks to retain weekly backups | `number` | `8` | no |
