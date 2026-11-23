@@ -80,7 +80,7 @@ Extended retention (monthly and yearly) can be disabled via `crit4_5_enable_exte
 | `sku` | The SKU of the vault (`Standard` or `RS0`) | `string` | `"Standard"` | no |
 | `storage_mode_type` | Storage redundancy (`GeoRedundant`, `LocallyRedundant`, `ZoneRedundant`) | `string` | `"GeoRedundant"` | no |
 | `cross_region_restore_enabled` | Enable cross-region restore (GeoRedundant only) | `bool` | `true` | no |
-| `immutability` | Immutability state (`Disabled`, `Unlocked`, `Locked`) | `string` | `"Locked"` | no |
+| `immutability` | Immutability state (`Disabled`, `Unlocked`, `Locked`) | `string` | `"Disabled"` | no |
 | `enable_vm_crit4_5_policy` | Create the crit4_5 VM backup policy | `bool` | `true` | no |
 | `enable_vm_test_policy` | Create the test VM backup policy | `bool` | `false` | no |
 | `enable_file_share_crit4_5_policy` | Create the crit4_5 Azure File Share backup policy | `bool` | `false` | no |
