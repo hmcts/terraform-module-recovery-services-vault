@@ -142,6 +142,12 @@ variable "crit4_5_hour_duration" {
   }
 }
 
+variable "crit4_5_crash_consistent" {
+  type        = bool
+  description = "Take crash-consistent snapshots for crit4_5 VMs. Needs a VM size that supports premium storage; set to false to use Azure's default consistency."
+  default     = true
+}
+
 variable "crit4_5_instant_restore_retention_days" {
   type        = number
   description = "The number of days to retain instant restore snapshots for crit4_5 workloads. Default is 7 days per CNP Baseline Policy. Instant Restore enables fast RTO by restoring from local snapshot rather than vault."
