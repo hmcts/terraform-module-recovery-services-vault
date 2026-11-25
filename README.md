@@ -20,6 +20,7 @@ It creates a Recovery Services Vault and MOJ-compliant backup policy for the ser
 > The `vm-test` policy is opt-in (`enable_vm_test_policy = false` by default).
 > The `fileshare-crit4-5` policy is opt-in (`enable_file_share_crit4_5_policy = false` by default). It reuses the `crit4_5_*` timezone, backup window start and retention variables, so changing those affects both policies. File share retention is capped at 200 daily, 200 weekly, 120 monthly and 10 yearly points.
 > The `fileshare-test` policy is opt-in (`enable_file_share_test_policy = false` by default) and reuses the `test_*` variables.
+> Both file share policies use `file_share_backup_tier` (default `vault-standard`, so backups are copied into the vault and covered by its immutability) and keep share snapshots for `file_share_snapshot_retention_days` (default 5) for file-level restores. Vaulted restores are full-share only.
 
 ## Usage
 
@@ -87,6 +88,8 @@ Extended retention (monthly and yearly) can be disabled via `crit4_5_enable_exte
 | `enable_vm_test_policy` | Create the test VM backup policy | `bool` | `false` | no |
 | `enable_file_share_crit4_5_policy` | Create the crit4_5 Azure File Share backup policy | `bool` | `false` | no |
 | `enable_file_share_test_policy` | Create the test Azure File Share backup policy | `bool` | `false` | no |
+| `file_share_backup_tier` | Backup tier for the file share policies (`vault-standard` or `snapshot`) | `string` | `"vault-standard"` | no |
+| `file_share_snapshot_retention_days` | Days to keep share snapshots with vault-standard; must be less than the daily retention count | `number` | `5` | no |
 | `vm_policy_type` | Policy type for the test policy (`V1` or `V2`) | `string` | `"V1"` | no |
 | `crit4_5_timezone` | Timezone for crit4_5 backup schedule | `string` | `"UTC"` | no |
 | `crit4_5_backup_window_start` | Start time of the hourly backup window (HH:MM) | `string` | `"02:00"` | no |

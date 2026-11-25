@@ -130,6 +130,9 @@ resource "azurerm_backup_policy_file_share" "crit4_5" {
 
   timezone = var.crit4_5_timezone
 
+  backup_tier                = var.file_share_backup_tier
+  snapshot_retention_in_days = var.file_share_backup_tier == "vault-standard" ? var.file_share_snapshot_retention_days : null
+
   # Daily backup at the start of the crit4_5 backup window
   backup {
     frequency = "Daily"
@@ -179,6 +182,10 @@ resource "azurerm_backup_policy_file_share" "crit4_5" {
       )
       error_message = "The fileshare-crit4-5 policy supports at most 200 daily, 200 weekly, 120 monthly and 10 yearly retention points. Reduce the crit4_5 retention counts or disable enable_file_share_crit4_5_policy."
     }
+    precondition {
+      condition     = var.file_share_backup_tier != "vault-standard" || var.file_share_snapshot_retention_days < var.crit4_5_daily_retention_count
+      error_message = "file_share_snapshot_retention_days must be less than crit4_5_daily_retention_count when the fileshare-crit4-5 policy uses vault-standard."
+    }
   }
 }
 
@@ -196,6 +203,9 @@ resource "azurerm_backup_policy_file_share" "test" {
 
   timezone = var.test_timezone
 
+  backup_tier                = var.file_share_backup_tier
+  snapshot_retention_in_days = var.file_share_backup_tier == "vault-standard" ? var.file_share_snapshot_retention_days : null
+
   # Daily backup schedule
   backup {
     frequency = "Daily"
@@ -212,6 +222,10 @@ resource "azurerm_backup_policy_file_share" "test" {
     precondition {
       condition     = var.test_daily_retention_count <= 200
       error_message = "The fileshare-test policy supports at most 200 daily retention points. Reduce test_daily_retention_count or disable enable_file_share_test_policy."
+    }
+    precondition {
+      condition     = var.file_share_backup_tier != "vault-standard" || var.file_share_snapshot_retention_days < var.test_daily_retention_count
+      error_message = "file_share_snapshot_retention_days must be less than test_daily_retention_count when the fileshare-test policy uses vault-standard."
     }
   }
 }
