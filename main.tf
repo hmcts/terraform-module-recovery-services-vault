@@ -130,6 +130,11 @@ resource "azurerm_backup_policy_file_share" "crit4_5" {
 
   timezone = var.crit4_5_timezone
 
+  # vault-standard keeps snapshots in the storage account for snapshot_retention_in_days
+  # and copies each daily backup into the vault, where retention and immutability apply.
+  backup_tier                = var.file_share_backup_tier
+  snapshot_retention_in_days = var.file_share_backup_tier == "vault-standard" ? var.file_share_snapshot_retention_days : null
+
   # Daily backup at the start of the crit4_5 backup window
   backup {
     frequency = "Daily"
@@ -195,6 +200,10 @@ resource "azurerm_backup_policy_file_share" "test" {
   recovery_vault_name = azurerm_recovery_services_vault.main.name
 
   timezone = var.test_timezone
+
+  # Same tier as fileshare-crit4-5, so vaulted restores can be tested with this policy
+  backup_tier                = var.file_share_backup_tier
+  snapshot_retention_in_days = var.file_share_backup_tier == "vault-standard" ? var.file_share_snapshot_retention_days : null
 
   # Daily backup schedule
   backup {

@@ -4,7 +4,7 @@ terraform {
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = ">= 3.0"
+      version = ">= 4.58.0" # backup_tier on azurerm_backup_policy_file_share
     }
   }
 }

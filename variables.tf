@@ -92,6 +92,28 @@ variable "enable_file_share_test_policy" {
   default     = false
 }
 
+variable "file_share_backup_tier" {
+  type        = string
+  description = "Backup tier for the Azure File Share policies. vault-standard takes a snapshot and copies it into the vault, so vault retention and immutability apply. snapshot keeps backups as share snapshots in the storage account only. Changing the tier on an existing policy may replace it, which Azure rejects while file shares are protected by it."
+  default     = "vault-standard"
+
+  validation {
+    condition     = contains(["vault-standard", "snapshot"], var.file_share_backup_tier)
+    error_message = "file_share_backup_tier must be one of: vault-standard, snapshot."
+  }
+}
+
+variable "file_share_snapshot_retention_days" {
+  type        = number
+  description = "Days to keep share snapshots in the storage account for the Azure File Share policies, for fast item-level restores. Only used when file_share_backup_tier is vault-standard. Must be between 1 and 30."
+  default     = 7
+
+  validation {
+    condition     = var.file_share_snapshot_retention_days >= 1 && var.file_share_snapshot_retention_days <= 30
+    error_message = "file_share_snapshot_retention_days must be between 1 and 30."
+  }
+}
+
 variable "vm_policy_type" {
   type        = string
   description = "The type of the VM backup policy for the test policy. Possible values are V1 (Standard) and V2 (Enhanced). Defaults to V1. Note: the crit4_5 policy always uses V2 Enhanced as required by the CNP Baseline Policy."
