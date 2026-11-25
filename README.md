@@ -20,6 +20,7 @@ It creates a Recovery Services Vault and MOJ-compliant backup policy for the ser
 > The `vm-test` policy is opt-in (`enable_vm_test_policy = false` by default).
 > The `fileshare-crit4-5` policy is opt-in (`enable_file_share_crit4_5_policy = false` by default). It reuses the `crit4_5_*` timezone, backup window start and retention variables, so changing those affects both policies. File share retention is capped at 200 daily, 200 weekly, 120 monthly and 10 yearly points.
 > The `fileshare-test` policy is opt-in (`enable_file_share_test_policy = false` by default) and reuses the `test_*` variables.
+> Both file share policies use the `vault-standard` tier by default (`file_share_backup_tier`): each daily backup is a share snapshot, kept in the storage account for `file_share_snapshot_retention_days` (default 7), then copied into the vault, where the retention above and vault immutability apply. Vaulted recovery points only support full share restore, and the target share needs at least 20% more free space than the source data. Set `file_share_backup_tier = "snapshot"` to keep snapshots in the storage account only. Changing the tier may replace the policy, which Azure rejects while shares are protected by it.
 
 ## Usage
 
@@ -87,6 +88,8 @@ Extended retention (monthly and yearly) can be disabled via `crit4_5_enable_exte
 | `enable_vm_test_policy` | Create the test VM backup policy | `bool` | `false` | no |
 | `enable_file_share_crit4_5_policy` | Create the crit4_5 Azure File Share backup policy | `bool` | `false` | no |
 | `enable_file_share_test_policy` | Create the test Azure File Share backup policy | `bool` | `false` | no |
+| `file_share_backup_tier` | Backup tier for the file share policies (`vault-standard` or `snapshot`) | `string` | `"vault-standard"` | no |
+| `file_share_snapshot_retention_days` | Days to keep share snapshots in the storage account (1-30, `vault-standard` only) | `number` | `7` | no |
 | `vm_policy_type` | Policy type for the test policy (`V1` or `V2`) | `string` | `"V1"` | no |
 | `crit4_5_timezone` | Timezone for crit4_5 backup schedule | `string` | `"UTC"` | no |
 | `crit4_5_backup_window_start` | Start time of the hourly backup window (HH:MM) | `string` | `"02:00"` | no |
@@ -110,6 +113,7 @@ Extended retention (monthly and yearly) can be disabled via `crit4_5_enable_exte
 | Name | Description |
 |------|-------------|
 | `recovery_vault_name` | The name of the Recovery Services Vault. Pass to `rsv_name` in the VM module. |
+| `recovery_vault_id` | The ID of the Recovery Services Vault. Use as the scope for role assignments on the vault. |
 | `recovery_vault_resource_group_name` | The resource group of the Recovery Services Vault. Pass to `rsv_resource_group_name` in the VM module. |
 | `crit4_5_backup_policy_id` | The ID of the `vm-crit4-5` backup policy. Use as `backup_policy_id` in `azurerm_backup_protected_vm` when enrolling VMs directly (i.e. when not using a VM module with built-in backup support). `null` when `enable_vm_crit4_5_policy = false`. |
 | `file_share_crit4_5_backup_policy_id` | The ID of the `fileshare-crit4-5` backup policy. Use as `backup_policy_id` in `azurerm_backup_protected_file_share`. `null` when `enable_file_share_crit4_5_policy = false`. |

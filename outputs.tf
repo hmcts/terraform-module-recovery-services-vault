@@ -8,6 +8,11 @@ output "recovery_vault_name" {
   value       = azurerm_recovery_services_vault.main.name
 }
 
+output "recovery_vault_id" {
+  description = "The ID of the Azure Recovery Services Vault. Use as the scope for role assignments on the vault."
+  value       = azurerm_recovery_services_vault.main.id
+}
+
 output "recovery_vault_resource_group_name" {
   description = "The resource group name of the Azure Recovery Services Vault. Use this alongside recovery_vault_name when enrolling VMs in backup."
   value       = var.resource_group_name
