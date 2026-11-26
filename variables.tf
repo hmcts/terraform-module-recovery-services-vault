@@ -92,6 +92,18 @@ variable "enable_file_share_test_policy" {
   default     = false
 }
 
+variable "file_share_backup_tier" {
+  type        = string
+  description = "Backup tier for the file share policies: vault-standard or snapshot."
+  default     = "vault-standard"
+}
+
+variable "file_share_snapshot_retention_days" {
+  type        = number
+  description = "Days to keep share snapshots with vault-standard. Must be less than the daily retention count."
+  default     = 5
+}
+
 variable "vm_policy_type" {
   type        = string
   description = "The type of the VM backup policy for the test policy. Possible values are V1 (Standard) and V2 (Enhanced). Defaults to V1. Note: the crit4_5 policy always uses V2 Enhanced as required by the CNP Baseline Policy."
